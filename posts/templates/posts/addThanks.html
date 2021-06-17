@@ -1,0 +1,32 @@
+{% extends "posts/layout.html" %}
+
+{% block body %}
+
+{% if postCount == 0 %}
+{{ False |json_script:"last_post" }}
+{% else %}
+{{ userCount |json_script:"userCount" }}
+{{ posts.date |json_script:"last_post" }}
+{% endif %}
+<main class="px-3 py-5">
+	    <br>
+<div>
+	<h1 class='text-center'>Today I'm thankful...</h1>
+</div>
+<div class ="form-group mx-auto" style="width: 75%">
+	<form action="{% url 'addThanks' %}" method="POST">
+		{% csrf_token %} 
+	<h6> Last post on: {{ posts.date}}</h6>
+		{{ postForm.as_p}}
+	<div class="text-center">
+	<button type="submit" id="submitThanks" value='Submit'class="btn btn-primary">
+  Submit <span class="badge badge-light" id="counterBadge">0</span>
+</button>
+</div>
+</div>
+	</form>
+</div>
+</main>
+
+{% endblock %}
+

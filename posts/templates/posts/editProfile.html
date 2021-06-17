@@ -1,0 +1,49 @@
+{% extends "posts/layout.html" %}
+{% block body %}
+{% if user.name == None %}
+
+<main class="px-3 py-5">
+  <brk>
+<h1>Create profile</h1>
+{% else %}
+<h1>Let's edit your profile</h1>
+{% endif %}
+
+<form method = "post" enctype="multipart/form-data"> 
+	{% csrf_token %} 
+  <div class="form-row">
+        <div class="col-md-6 mb-3">
+    {{ profile_form.first_name.label_tag}}
+    {{ profile_form.first_name}}
+        </div>
+    <div class="col-md-6 mb-3">    
+    {{ profile_form.last_name.label_tag}}
+    {{ profile_form.last_name}}
+    </div>
+  </div>
+  <div class="form-row">
+    <div class="col-md-6 mb-3">
+      {{ profile_form.city.label_tag}}
+      {{ profile_form.city}}
+    </div>
+    <div class="col-md-3 mb-3">
+      {{ profile_form.state.label_tag}}
+      {{ profile_form.state}}
+    </div>
+    <div class="col-md-3 mb-3">
+      {{ profile_form.zip_code.label_tag}}
+      {{ profile_form.zip_code}}
+    </div>
+    </div>     
+    <div class="form-group">
+      {{ profile_form.about.label_tag}}
+      {{ profile_form.about}}
+    </div>
+    <div class="form-group">
+      {{ profile_form.profile_pic.label_tag}}
+      {{ profile_form.profile_pic}}
+    </div>
+    <button class="btn btn-primary" type="submit">Submit form</button> 
+</form> 
+</main>
+{% endblock %}

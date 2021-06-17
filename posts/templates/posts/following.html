@@ -1,0 +1,86 @@
+{% extends "posts/layout.html" %}
+
+{% block body %}
+
+<main class="px-3 py-5">
+<div class="starter-template">
+  <br>
+<h1 class='text-center'>Folowing</h1>
+</div>
+{% regroup posts by timestamp|date as date_list %}
+{% for time in date_list %}
+	{% regroup time.list by user as user_list %}
+		{% for user in user_list %}
+		<div class="card border-info mb-3 mx-auto" style="width: 90%;">
+			<div class="card-header">
+  			<div>
+  	    		<img src="{{ user.grouper.profile_pic.url }}" class="rounded-circle mr-3" height="50px" width="50px" alt="avatar" style="float:left">
+  	    		<a href="{% url 'profile' user.grouper.id %}"><h4>@{{user.grouper}}</h4></a>
+  	
+  			<h5 style="float:middle"class="card-title">{{ time.grouper}}</h5>
+  			</div>
+  		</div>
+  			<div class="card-body">
+			{% for x in user.list %}
+
+        	<ul class="list-group list-group-flush">
+        		<li class="list-group-item">{{ x.post }}
+           
+            {% if request.user.is_authenticated %}
+            	{% if request.user not in x.liked.all %}
+
+            	<button type="button" style="vertical-align: top; float: right" id="likeButton{{x.id}}" value="{{x.id}}" class="btn btn-secondary btn-sm float-right" onclick='like(this.value)'>Like <span class="badge badge-light" id ="badgeLike{{x.id}}">{{ x.liked.all.count }} </span></button>
+
+            	<button type="button"  style="display: none" id="unlikeButton{{x.id}}" value="{{ x.id}}" class="btn btn-secondary btn-sm float-right" onclick="unlike(this.value)">Unlike <span class="badge badge-light" id ="badgeUnlike{{x.id}}">{{ x.liked.all.count }} </span></button>
+       		
+            			{% else %}
+              				<button type="button" style="vertical-align: top" id="unlikeButton{{x.id}}" value="{{ x.id}}" class="btn btn-secondary btn-sm float-right" onclick="unlike(this.value)">Unlike <span class="badge badge-light" id ="badgeUnlike{{x.id}}">{{ x.liked.all.count }} </span></button>
+                 
+
+                  			<button type="button" style="display: none" id="likeButton{{x.id}}" value="{{ x.id}}" class="btn btn-secondary btn-sm float-right" onclick="like(this.value)">Like <span class="badge badge-light" id ="badgeLike{{x.id}}">{{ x.liked.all.count }} </span></button>
+            			{% endif %}
+            	{% endif %}
+            	</li>
+  			</ul>
+			{% endfor %}
+		</div>
+	</div>
+		{% endfor %}
+{% endfor %}
+
+
+<!--PAGINATION -->
+{% if posts.has_other_pages %}
+<div>
+<nav aria-label="Page navigation example">
+<ul class="pagination">
+{% if posts.has_previous %}
+    <li class="page-item">
+      <a class="page-link" href="?page={{ posts.previous_page_number }}"aria-label="Previous">
+        <span aria-hidden="true">&laquo;</span>
+      </a>
+    </li>
+{% endif %}
+{% for n in posts.paginator.page_range %}
+  {% if posts.number == n%}
+     <li class="page-item active" aria-current="page">
+      <a class="page-link" href="?page={{n}}">{{n}} <span class="sr-only">(current)</span></a>
+    </li>
+  {% else %}
+    <li class="page-item"><a class="page-link" href="?page={{n}}">{{n}}</a></li>
+  {% endif %}
+{% endfor %}
+
+{% if posts.has_next %}
+    <li class="page-item">
+      <a class="page-link" href="?page={{ posts.next_page_number }}" aria-label="Next">
+        <span aria-hidden="true">&raquo;</span>
+      </a>
+    </li>
+{% endif %}
+</ul>
+</nav>
+</div>
+{% endif %}
+</main>
+{% endblock %}
